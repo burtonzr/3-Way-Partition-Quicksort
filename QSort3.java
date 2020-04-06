@@ -63,17 +63,12 @@ public class QSort3 {
 			}
 		}
 		
-		//System.out.println("left: " + data[left]);
-		//System.out.println("right: " + data[right]);
+		int pivot_1 = (int) (Math.floor((right - left) / 3) + left) - 1;
+		int pivot_2 = (int) ((Math.floor((right - left) / 3) + left) * 2) - 1;
 		
-		int temp = (int) (Math.floor((left + right) / 3));
-		int temp2 = temp + temp;
-		
-		// order pivots such that pivot_1 < pivot_2
-		int pivot_1 = data[temp - 1]; //data[2] for first test array
-		int pivot_2 = data[temp2 - 1]; //data[5] for first test array
-		//System.out.println("pivot1: " + pivot_1);
-		//System.out.println("pivot2: " + pivot_2);
+		if(pivot_2 > right) {
+			pivot_2 = right;
+		}
 		
 		swap(left, pivot_1);
 		int p1 = partition_1(data, left, right, pivot_1);

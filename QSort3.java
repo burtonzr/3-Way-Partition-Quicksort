@@ -7,6 +7,8 @@ import java.util.stream.IntStream;
 public class QSort3 {
 	
 	public static int[] data; 
+	public static int pivot_1;
+	public static int pivot_2;
 	
 	public static void main(String[] args) {
 		data = readFiles(args[0]);
@@ -41,7 +43,6 @@ public class QSort3 {
 	}
 	
 	public static String Quicksort3(int[] data, int left, int right) {
-	
 		// handling trivial cases
 		if(left == right) {
 			//if only one element then return
@@ -63,23 +64,46 @@ public class QSort3 {
 			}
 		}
 		
-		int pivot_1 = (int) (Math.floor((right - left) / 3) + left) - 1;
-		int pivot_2 = (int) ((Math.floor((right - left) / 3) + left) * 2) - 1;
+		if(left > right) {
+			int tempSwap = left; 
+			left = right;
+			right = tempSwap;
+		}
+		
+		if((left + 2) == right) {
+			pivot_1 = left;
+			pivot_2 = right;
+		} else {
+			pivot_1 = (int) (Math.floor((right - left) / 3) + left) - 1;
+			pivot_2 = (int) ((Math.floor((right - left) / 3) + left) * 2) - 1;
+		}
+		
+		if(pivot_1 < left) {
+			pivot_1 = left;
+		}
 		
 		if(pivot_2 > right) {
 			pivot_2 = right;
 		}
 		
+		if(pivot_1 > pivot_2) {
+			swap(pivot_1, pivot_2);
+		}
+		
 		swap(left, pivot_1);
-		int p1 = partition_1(data, left, right, pivot_1);
+		int p1 = partition_1(data, left, right);
         swap(left, p1);
-        
+       
         swap(right, pivot_2);
-        int p2 = partition_2(data, left, right, pivot_2);
-        swap(right, p2);
-        
-        Quicksort3(data, left, p1 - 1);
-        Quicksort3(data, p1 + 1, p2 - 1);
+        int p2 = partition_2(data, left, right);
+        swap(right, p2);        
+		
+        if(p1 != 0) {
+        	Quicksort3(data, left, p1 - 1);
+        }
+        if(p2 != 0) {
+        	Quicksort3(data, p1 + 1, p2 - 1);
+        }
         Quicksort3(data, p2 + 1, right);
         
         String result = IntStream.of(data).mapToObj(Integer::toString).collect(Collectors.joining(", "));
@@ -97,12 +121,13 @@ public class QSort3 {
 		}
 	}
 	
-	public static int partition_1(int[] data, int left, int right, int pivot) {
-		pivot = left;
+	public static int partition_1(int[] data, int left, int right) {
+		int pivot = left;
 		while(left <= right) {
 			while(!(data[left] > data[pivot])) {
 				left++;
 			}
+			
 			while(data[right] > data[pivot]) {
 				right--;
 			}
@@ -114,12 +139,11 @@ public class QSort3 {
 			}
 		}
 		
-		
 		return right;
 	}
 	
-	public static int partition_2(int[] data, int left, int right, int pivot) {
-		pivot = right;
+	public static int partition_2(int[] data, int left, int right) {
+		int pivot = right;
 		while(left <= right) {
 			while(data[left] < data[pivot]) {
 				left++;

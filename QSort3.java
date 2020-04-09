@@ -1,4 +1,3 @@
-  
 import java.io.File;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -14,6 +13,17 @@ public class QSort3 {
 		data = readFiles(args[0]);
 		String sortedArray = Quicksort3(data, 0,  data.length - 1);
 		System.out.println(sortedArray);
+		System.out.println(isSorted(data));
+	}
+	
+	public static boolean isSorted(int[] a) {
+		for(int i = 0; i < a.length - 1; i++) {
+			if(a[i] > a[i + 1]) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 	
 	public static int[] readFiles(String file) {
@@ -45,6 +55,7 @@ public class QSort3 {
 	public static String Quicksort3(int[] data, int left, int right) {
 		// handling trivial cases
 		if(right - left == 0 || left > right) {
+			// if only one element
 			String result = IntStream.of(data).mapToObj(Integer::toString).collect(Collectors.joining(", "));
 			return result;
 		}
@@ -71,14 +82,13 @@ public class QSort3 {
 		}
 		
 		swap(left, pivot_1);
-		int p1 = partition_1(data, left, right);
+		int p1 = partition_1(data, left - 1, right + 1, pivot_1);
         swap(left, p1);
        
         swap(right, pivot_2);
-        int p2 = partition_2(data, left, right);
+        int p2 = partition_2(data, left - 1, right + 1, pivot_2);
         swap(right, p2);        
 		
-        
         Quicksort3(data, left, p1 - 1);
         Quicksort3(data, p1 + 1, p2 - 1);
         Quicksort3(data, p2 + 1, right);
@@ -94,45 +104,39 @@ public class QSort3 {
 		data[pivot] = tempSwap;
 	}
 	
-	public static int partition_1(int[] data, int left, int right) {
-		int pivot = left;
-		while(left <= right) {
-			while(data[left] < data[pivot]) {
-				left++;
-			}
+	public static int partition_1(int[] data, int left, int right, int pivot) {
+		pivot = left + 1;
+		while(left < right) {
 			
-			while((right != 0) && data[right] > data[pivot]) {
-				right--;
-			}
-			
-			if(left <= right) {
-				swap(left, right);
-				left++;
-				right--;
-			}
-		}
+            while(data[++left] < data[pivot]);
+            // move the left bound to the right
+            
+            while((right != 0) && (data[--right] > data[pivot]));
+            //move the right bound to the left
+            
+            swap(left, right); // swap values
+        }
 		
-		return right;
+        swap(left, right); // reverse swap
+        
+        return right;
 	}
 	
-	public static int partition_2(int[] data, int left, int right) {
-		int pivot = right;
-		while(left <= right) {
-			while(data[left] < data[pivot]) {
-				left++;
-			}
+	public static int partition_2(int[] data, int left, int right, int pivot) {
+		pivot = right - 1;
+		while(left < right) {
 			
-			while((right != 0) && !(data[right] < data[pivot])) {
-				right--;
-			}
-			
-			if(left <= right) {
-				swap(left, right);
-				left++;
-				right--;
-			}
-		}
+            while(data[++left] < data[pivot]);
+            // move the left bound to the right
+            
+            while((right != 0) && (data[--right] > data[pivot]));
+            //move the right bound to the left
+            
+            swap(left, right); // swap values
+        }
 		
-		return left;
+        swap(left, right); // reverse swap
+        
+        return left;
 	}
 }
